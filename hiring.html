@@ -14,34 +14,11 @@
     <main class="main">
       <div class="col-header">
         <h1>Hiring</h1>
-        <div class="tabs">
-          <div class="tab active">Open roles</div>
-          <div class="tab">Saved</div>
+        <div class="hiring-head">
+          <p>Open roles from verified companies on X.</p>
         </div>
+        <div class="filters" id="filters"></div>
       </div>
-
-      <div class="hiring-intro">
-        <p>Post a job offer to the X community. Fill the form below — it's added to the board instantly.</p>
-      </div>
-
-      <form class="job-form" id="job-form">
-        <input name="role" placeholder="Role — e.g. Senior Frontend Engineer" required>
-        <div class="grid2">
-          <input name="company" placeholder="Company" required>
-          <input name="location" placeholder="Location — e.g. Remote / Paris">
-        </div>
-        <div class="grid2">
-          <select name="type">
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
-            <option value="Contract">Contract</option>
-            <option value="Internship">Internship</option>
-          </select>
-          <input name="salary" placeholder="Salary — e.g. $120k–$160k">
-        </div>
-        <textarea name="desc" placeholder="Short description of the role..."></textarea>
-        <button type="submit">Post job</button>
-      </form>
 
       <div id="jobs"></div>
     </main>
