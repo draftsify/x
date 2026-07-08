@@ -297,43 +297,61 @@ a { color: inherit; text-decoration: none; }
 }
 .freset:hover { color: var(--text); background: var(--bg-hover); }
 
-/* job cards — minimal & airy */
-.jobs-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; padding: 20px; }
+/* job rows — one offer per line */
+.jobs-list { display: flex; flex-direction: column; }
 
-.jcard {
-  display: block; background: #16181c; border-radius: 16px;
-  padding: 20px; cursor: pointer;
-  transition: background .2s ease, transform .2s ease;
-}
-.jcard:hover { background: #1c1f24; transform: translateY(-2px); }
-.jcard:active { transform: translateY(0); }
-
-.jc-emp { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .jc-logo {
-  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  border-radius: 12px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 800; font-size: 14px;
+  color: #fff; font-weight: 800; font-size: 15px;
 }
-.jc-logo svg { width: 20px; height: 20px; fill: #fff; }
-.jc-name { display: flex; align-items: center; gap: 5px; font-weight: 600; font-size: 14px; color: var(--text-muted); min-width: 0; }
-.jc-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.jc-name .badge { width: 15px; height: 15px; flex-shrink: 0; }
+.jc-logo svg { width: 22px; height: 22px; fill: #fff; }
 
-.jc-role { font-size: 16px; font-weight: 800; color: var(--text); margin-top: 16px; line-height: 1.3; }
-.jc-sub { color: var(--text-muted); font-size: 14px; margin-top: 8px; }
+.jrow {
+  position: relative;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s ease;
+}
+.jrow:hover { background: #0a0a0a; }
+.jrow.sel { background: #101216; }
+.jrow.sel::before { content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 60%; background: var(--accent); border-radius: 0 3px 3px 0; }
+.jrow .jc-logo { width: 44px; height: 44px; }
+.jrow-main { flex: 1; min-width: 0; }
+.jrow-title { font-size: 15px; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jrow-co { display: flex; align-items: center; gap: 5px; margin-top: 2px; color: var(--text-muted); font-size: 14px; min-width: 0; }
+.jrow-co .cname { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jrow-co .badge { width: 15px; height: 15px; flex-shrink: 0; }
+.jrow-right { flex-shrink: 0; text-align: right; color: var(--text-muted); font-size: 14px; }
+.jrow-right .loc { white-space: nowrap; }
+.jrow-right .sal { color: var(--text); font-weight: 600; margin-top: 2px; white-space: nowrap; }
+.jrow-chev { flex-shrink: 0; width: 18px; height: 18px; fill: var(--text-muted); }
 .jc-empty { padding: 40px 20px; color: var(--text-muted); font-size: 14px; }
 
-/* ---- single job detail — minimal ---- */
-.jdetail { padding: 24px; max-width: 640px; animation: fadeUp .25s ease both; }
-.jdetail-back {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: transparent; border: none; color: var(--text-muted);
-  padding: 6px 0; font-size: 14px; font-weight: 700;
-  cursor: pointer; margin-bottom: 24px; transition: color .2s;
+/* ---- slide-in detail drawer ---- */
+.drawer-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,.55);
+  opacity: 0; pointer-events: none; transition: opacity .25s ease; z-index: 1000;
 }
-.jdetail-back:hover { color: var(--text); }
-.jdetail-back svg { width: 16px; height: 16px; fill: currentColor; }
+.drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+.drawer {
+  position: fixed; top: 0; right: 0; height: 100vh; width: min(460px, 92vw);
+  background: #000; border-left: 1px solid var(--border);
+  transform: translateX(100%); transition: transform .3s cubic-bezier(.2,.7,.3,1);
+  z-index: 1001; overflow-y: auto; box-shadow: -24px 0 48px rgba(0,0,0,.5);
+}
+.drawer.open { transform: translateX(0); }
+.drawer-close {
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  width: 36px; height: 36px; border-radius: 9999px; border: none;
+  background: rgba(255,255,255,.06); color: var(--text);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background .2s;
+}
+.drawer-close:hover { background: rgba(255,255,255,.12); }
+.drawer-close svg { width: 18px; height: 18px; fill: currentColor; }
 
+.jdetail { padding: 56px 24px 40px; }
 .jdetail-head { display: flex; align-items: center; gap: 14px; }
 .jdetail-head .jc-logo { width: 52px; height: 52px; border-radius: 14px; font-size: 19px; }
 .jdetail-head .jc-logo svg { width: 26px; height: 26px; }

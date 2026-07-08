@@ -70,30 +70,36 @@ const BADGE_GOLD = '<svg class="badge" viewBox="0 0 22 22" aria-hidden="true"><d
 const ICON_PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c-4.687 0-8.5 3.813-8.5 8.5 0 5.967 7.621 11.116 7.945 11.332l.555.37.555-.37c.324-.216 7.945-5.365 7.945-11.332C20.5 5.813 16.687 2 12 2zm0 11.5c-1.65 0-3-1.34-3-3s1.35-3 3-3c1.66 0 3 1.34 3 3s-1.34 3-3 3z"/></svg>';
 const ICON_BILL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M11.871 4.535c2.89-.377 5.91-.747 9.839.096l.79.169v14.795l-1.183-.22c-3.578-.664-6.31-.286-9.188.09-2.89.377-5.91.747-9.839-.095l-.79-.17V4.405l1.183.22c3.577.664 6.31.285 9.188-.09zM3.5 17.567c.874.154 1.699.24 2.49.282-.095-.92-1.039-2.05-2.49-2.05v1.768zm17-2.317c-1.41 0-2.343.879-2.48 1.772.788.022 1.612.083 2.48.2V15.25zm-8.5-6c-1.352 0-2.25 1.355-2.25 2.75 0 1.394.898 2.75 2.25 2.75 1.352 0 2.25-1.356 2.25-2.75 0-1.395-.898-2.75-2.25-2.75zm-8.5-.5c1.412 0 2.343-.88 2.48-1.775-.789-.02-1.612-.081-2.48-.198V8.75zm14.509-2.6c.093.919 1.039 2.05 2.491 2.05V6.432c-.875-.154-1.7-.242-2.491-.283z"/></svg>';
 
-function jobCardHTML(job) {
+const ICON_X = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.59 12L4.54 5.96l1.42-1.42L12 10.59l6.04-6.05 1.42 1.42L13.41 12l6.05 6.04-1.42 1.42L12 13.41l-6.04 6.05-1.42-1.42L10.59 12z"/></svg>';
+const ICON_ARROW = '<svg class="jrow-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.586 12L7.543 4.96l1.414-1.42L17.414 12l-8.457 8.46-1.414-1.42L14.586 12z"/></svg>';
+
+function rowHTML(job) {
   const c = COMPANIES[job.co];
   const salary = job.salary ? job.salary.replace(/\s+per\s+year/i, '/yr') : '';
-  const sub = salary ? `${job.location} · ${salary}` : job.location;
   return `
-  <a class="jcard" href="#" tabindex="0" data-i="${JOBS.indexOf(job)}">
-    <div class="jc-emp">
-      <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
-      <div class="jc-name"><span>${c.name}</span>${BADGE_GOLD}</div>
+  <div class="jrow" data-i="${JOBS.indexOf(job)}" role="button" tabindex="0">
+    <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
+    <div class="jrow-main">
+      <div class="jrow-title">${job.role}</div>
+      <div class="jrow-co"><span class="cname">${c.name}</span>${BADGE_GOLD}</div>
     </div>
-    <div class="jc-role">${job.role}</div>
-    <div class="jc-sub">${sub}</div>
-  </a>`;
+    <div class="jrow-right">
+      <div class="loc">${job.location}</div>
+      ${salary ? `<div class="sal">${salary}</div>` : ''}
+    </div>
+    ${ICON_ARROW}
+  </div>`;
 }
 
 const ICON_CHEV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.543 8.96l1.414-1.42L12 14.59l7.043-7.05 1.414 1.42L12 17.41 3.543 8.96z"/></svg>';
 const ICON_CASE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 6h-4V4.5C15.5 3.12 14.38 2 13 2h-2C9.62 2 8.5 3.12 8.5 4.5V6h-4C3.12 6 2 7.12 2 8.5v10C2 19.88 3.12 21 4.5 21h15c1.38 0 2.5-1.12 2.5-2.5v-10C22 7.12 20.88 6 19.5 6zM10.5 4.5c0-.28.22-.5.5-.5h2c.28 0 .5.22.5.5V6h-3V4.5zM20 18.5c0 .28-.22.5-.5.5h-15c-.28 0-.5-.22-.5-.5v-10c0-.28.22-.5.5-.5h15c.28 0 .5.22.5.5v10z"/></svg>';
 const ICON_BACK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"/></svg>';
 
-function detailHTML(job) {
+function drawerHTML(job) {
   const c = COMPANIES[job.co];
   return `
+  <button class="drawer-close" type="button" aria-label="Close">${ICON_X}</button>
   <div class="jdetail">
-    <button class="jdetail-back" type="button">${ICON_BACK} Back</button>
     <div class="jdetail-head">
       <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
       <div class="jdetail-headinfo">
@@ -111,9 +117,25 @@ function detailHTML(job) {
   </div>`;
 }
 
+function markSelected() {
+  document.querySelectorAll('.jrow').forEach((r) => r.classList.toggle('sel', Number(r.dataset.i) === selectedIndex));
+}
+
 function openDetail(i) {
-  document.getElementById('jobs').innerHTML = detailHTML(JOBS[i]);
-  window.scrollTo({ top: 0 });
+  selectedIndex = i;
+  document.getElementById('drawer').innerHTML = drawerHTML(JOBS[i]);
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer').setAttribute('aria-hidden', 'false');
+  document.getElementById('drawerBackdrop').classList.add('open');
+  markSelected();
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer').setAttribute('aria-hidden', 'true');
+  document.getElementById('drawerBackdrop').classList.remove('open');
+  selectedIndex = -1;
+  markSelected();
 }
 
 // derive filterable attributes (defaults when not set on the job)
@@ -133,6 +155,7 @@ const DROPDOWN_DEFS = [
 let activeFilter = 'For you';
 let kw = '', locq = '';
 const df = {}; // active dropdown filters
+let selectedIndex = -1;
 
 function matchesJob(job) {
   if (activeFilter !== 'For you' && !(job.cats || []).includes(activeFilter)) return false;
@@ -164,8 +187,9 @@ function renderDropdowns() {
 function renderJobs() {
   const list = JOBS.filter(matchesJob);
   document.getElementById('jobs').innerHTML = list.length
-    ? `<div class="jobs-list">${list.map(jobCardHTML).join('')}</div>`
+    ? `<div class="jobs-list">${list.map(rowHTML).join('')}</div>`
     : '<div class="jc-empty">No roles match your search.</div>';
+  markSelected();
 }
 
 function refresh() { renderFilters(); renderDropdowns(); renderJobs(); }
@@ -220,10 +244,21 @@ function initHiring() {
 
   document.addEventListener('click', (e) => { if (!e.target.closest('.dropdowns')) closeMenus(); });
 
+  // open a role as a slide-in drawer
   document.getElementById('jobs').addEventListener('click', (e) => {
-    if (e.target.closest('.jdetail-back')) { renderJobs(); window.scrollTo({ top: 0 }); return; }
-    if (e.target.closest('.jdetail-apply')) return;
-    const card = e.target.closest('.jcard');
-    if (card) { e.preventDefault(); openDetail(Number(card.dataset.i)); }
+    const row = e.target.closest('.jrow');
+    if (row) openDetail(Number(row.dataset.i));
   });
+  document.getElementById('jobs').addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const row = e.target.closest('.jrow');
+    if (row) { e.preventDefault(); openDetail(Number(row.dataset.i)); }
+  });
+
+  // close drawer
+  document.getElementById('drawer').addEventListener('click', (e) => {
+    if (e.target.closest('.drawer-close')) closeDrawer();
+  });
+  document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
 }
