@@ -212,8 +212,8 @@ a { color: inherit; text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
 
 /* ---------- Hiring page ---------- */
-/* wide, single-column layout (no right panel) */
-.app-wide { grid-template-columns: 275px minmax(0, 760px); max-width: 1050px; }
+/* wide layout (no right panel) — fills to the right edge */
+.app-wide { grid-template-columns: 275px minmax(0, 1fr); max-width: none; margin: 0; justify-content: start; }
 
 .hiring-head { padding: 8px 16px 4px; }
 .hiring-head p { color: var(--text-muted); font-size: 14px; }
@@ -298,8 +298,7 @@ a { color: inherit; text-decoration: none; }
 .freset:hover { color: var(--text); background: var(--bg-hover); }
 
 /* job cards — one card per role, sober and well-spaced */
-.jobs-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding: 18px 16px; }
-@media (max-width: 680px) { .jobs-list { grid-template-columns: 1fr; } }
+.jobs-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; padding: 18px; }
 
 .jcard {
   position: relative; display: block;
@@ -345,6 +344,47 @@ a { color: inherit; text-decoration: none; }
 .jc-row .amt { color: var(--white); font-weight: 800; }
 .jc-dot { color: var(--text-muted); }
 .jc-empty { padding: 24px 16px; color: var(--text-muted); font-size: 14px; }
+
+/* ---- single job detail view ---- */
+.jdetail { padding: 18px; max-width: 820px; animation: fadeUp .25s ease both; }
+.jdetail-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.06); border: none; color: var(--text);
+  border-radius: 9999px; padding: 8px 16px; font-size: 14px; font-weight: 700;
+  cursor: pointer; margin-bottom: 16px; transition: background .2s, transform .1s;
+}
+.jdetail-back:hover { background: rgba(255,255,255,.12); }
+.jdetail-back:active { transform: scale(.96); }
+.jdetail-back svg { width: 16px; height: 16px; fill: currentColor; }
+
+.jdetail-card { background: #16181c; border-radius: 20px; padding: 24px; }
+.jdetail-head { display: flex; align-items: flex-start; gap: 14px; }
+.jdetail-head .jc-logo { width: 56px; height: 56px; border-radius: 15px; font-size: 20px; }
+.jdetail-head .jc-logo svg { width: 28px; height: 28px; }
+.jdetail-headinfo { flex: 1; min-width: 0; }
+.jdetail-co { display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 700; color: var(--text-muted); }
+.jdetail-co .badge { width: 18px; height: 18px; }
+.jdetail-role { font-size: 22px; font-weight: 800; margin-top: 2px; line-height: 1.25; }
+.jdetail-apply {
+  flex-shrink: 0; background: var(--white); color: #0f1419; border: none;
+  border-radius: 9999px; padding: 11px 26px; font-size: 15px; font-weight: 800; cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+.jdetail-apply:hover { background: #d7dbdc; }
+.jdetail-apply:active { transform: scale(.97); }
+
+.jdetail-tags { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.jtag { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.06); color: var(--text); padding: 7px 13px; border-radius: 9999px; font-size: 13px; font-weight: 600; }
+.jtag svg { width: 16px; height: 16px; fill: var(--text-muted); }
+.jtag.sal { color: var(--repost); }
+.jtag.sal svg { fill: var(--repost); }
+
+.jdetail-body { margin-top: 22px; border-top: 1px solid var(--border); padding-top: 20px; }
+.jdetail-body h3 { font-size: 17px; font-weight: 800; margin: 22px 0 8px; }
+.jdetail-body h3:first-child { margin-top: 0; }
+.jdetail-body p { font-size: 15px; line-height: 1.65; color: var(--text); }
+.jdetail-body ul { margin: 6px 0 0; padding-left: 20px; }
+.jdetail-body li { font-size: 15px; line-height: 1.65; color: var(--text); margin-bottom: 4px; }
 
 /* keep the whole hiring page white/bold — no accent blue */
 .page-hiring .widget .more { color: var(--text); font-weight: 700; }

@@ -78,7 +78,7 @@ function jobCardHTML(job) {
       <span class="jc-row">${ICON_BILL}<span class="amt">${amt}</span>${per ? `<span>per ${per}</span>` : ''}</span>`
     : '';
   return `
-  <a class="jcard" href="#" tabindex="0">
+  <a class="jcard" href="#" tabindex="0" data-i="${JOBS.indexOf(job)}">
     <div class="jc-head">
       <div class="jc-emp">
         <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
@@ -95,6 +95,60 @@ function jobCardHTML(job) {
 }
 
 const ICON_CHEV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.543 8.96l1.414-1.42L12 14.59l7.043-7.05 1.414 1.42L12 17.41 3.543 8.96z"/></svg>';
+const ICON_CASE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 6h-4V4.5C15.5 3.12 14.38 2 13 2h-2C9.62 2 8.5 3.12 8.5 4.5V6h-4C3.12 6 2 7.12 2 8.5v10C2 19.88 3.12 21 4.5 21h15c1.38 0 2.5-1.12 2.5-2.5v-10C22 7.12 20.88 6 19.5 6zM10.5 4.5c0-.28.22-.5.5-.5h2c.28 0 .5.22.5.5V6h-3V4.5zM20 18.5c0 .28-.22.5-.5.5h-15c-.28 0-.5-.22-.5-.5v-10c0-.28.22-.5.5-.5h15c.28 0 .5.22.5.5v10z"/></svg>';
+const ICON_BACK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"/></svg>';
+
+function detailHTML(job) {
+  const c = COMPANIES[job.co];
+  const salary = job.salary || 'Competitive';
+  return `
+  <div class="jdetail">
+    <button class="jdetail-back" type="button">${ICON_BACK} Back to jobs</button>
+    <div class="jdetail-card">
+      <div class="jdetail-head">
+        <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
+        <div class="jdetail-headinfo">
+          <div class="jdetail-co"><span>${c.name}</span>${BADGE_GOLD}</div>
+          <div class="jdetail-role">${job.role}</div>
+        </div>
+        <button class="jdetail-apply" type="button">Apply</button>
+      </div>
+      <div class="jdetail-tags">
+        <span class="jtag">${ICON_PIN}${job.location}</span>
+        <span class="jtag">${ICON_CASE}${empTypeOf(job)} · ${seniorityOf(job)} · ${locTypeOf(job)}</span>
+        ${job.salary ? `<span class="jtag sal">${ICON_BILL}${job.salary}</span>` : ''}
+      </div>
+      <div class="jdetail-body">
+        <h3>About ${c.name}</h3>
+        <p>${c.name} is a verified company hiring on X. They're building an ambitious product with a small, high-agency team that ships fast and cares deeply about craft.</p>
+        <h3>About the role</h3>
+        <p>As a ${job.role}, you'll own core product surfaces end to end — from early exploration to pixel-perfect delivery — working closely with engineering and product to raise the bar on quality.</p>
+        <h3>What you'll do</h3>
+        <ul>
+          <li>Design flows, interfaces and interactions across web and mobile.</li>
+          <li>Turn ambiguous problems into clear, opinionated product decisions.</li>
+          <li>Prototype quickly and validate ideas with real users.</li>
+          <li>Uphold a high visual and interaction standard across the product.</li>
+        </ul>
+        <h3>What we're looking for</h3>
+        <ul>
+          <li>A strong portfolio of shipped, widely-used work.</li>
+          <li>Comfort operating at ${seniorityOf(job)} scope in a fast-paced team.</li>
+          <li>Fluency in modern design and prototyping tools.</li>
+        </ul>
+        <h3>Location &amp; type</h3>
+        <p>${job.location} · ${empTypeOf(job)} · ${locTypeOf(job)}.</p>
+        <h3>Compensation</h3>
+        <p>${salary}${job.salary ? '' : ' — depending on experience'}, plus equity and benefits.</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openDetail(i) {
+  document.getElementById('jobs').innerHTML = detailHTML(JOBS[i]);
+  window.scrollTo({ top: 0 });
+}
 
 // derive filterable attributes (defaults when not set on the job)
 const locTypeOf = (j) => j.locType || (/remote/i.test(j.location) || (j.cats || []).includes('Remote') ? 'Remote' : 'On-site');
@@ -201,6 +255,9 @@ function initHiring() {
   document.addEventListener('click', (e) => { if (!e.target.closest('.dropdowns')) closeMenus(); });
 
   document.getElementById('jobs').addEventListener('click', (e) => {
-    if (e.target.closest('.jcard')) e.preventDefault();
+    if (e.target.closest('.jdetail-back')) { renderJobs(); window.scrollTo({ top: 0 }); return; }
+    if (e.target.closest('.jdetail-apply')) return;
+    const card = e.target.closest('.jcard');
+    if (card) { e.preventDefault(); openDetail(Number(card.dataset.i)); }
   });
 }
