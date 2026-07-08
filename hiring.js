@@ -72,25 +72,16 @@ const ICON_BILL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path clip-rule="
 
 function jobCardHTML(job) {
   const c = COMPANIES[job.co];
-  const [amt, per] = (job.salary || '').split(/\s+per\s+/i);
-  const salaryRow = amt
-    ? `<span class="jc-dot">·</span>
-      <span class="jc-row">${ICON_BILL}<span class="amt">${amt}</span>${per ? `<span>per ${per}</span>` : ''}</span>`
-    : '';
+  const salary = job.salary ? job.salary.replace(/\s+per\s+year/i, '/yr') : '';
+  const sub = salary ? `${job.location} · ${salary}` : job.location;
   return `
   <a class="jcard" href="#" tabindex="0" data-i="${JOBS.indexOf(job)}">
-    <div class="jc-head">
-      <div class="jc-emp">
-        <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
-        <div class="jc-name"><span>${c.name}</span>${BADGE_GOLD}</div>
-      </div>
-      <button class="jc-apply">Apply</button>
+    <div class="jc-emp">
+      <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
+      <div class="jc-name"><span>${c.name}</span>${BADGE_GOLD}</div>
     </div>
     <div class="jc-role">${job.role}</div>
-    <div class="jc-meta">
-      <span class="jc-row">${ICON_PIN}<span>${job.location}</span></span>
-      ${salaryRow}
-    </div>
+    <div class="jc-sub">${sub}</div>
   </a>`;
 }
 
@@ -100,48 +91,23 @@ const ICON_BACK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.414 1
 
 function detailHTML(job) {
   const c = COMPANIES[job.co];
-  const salary = job.salary || 'Competitive';
   return `
   <div class="jdetail">
-    <button class="jdetail-back" type="button">${ICON_BACK} Back to jobs</button>
-    <div class="jdetail-card">
-      <div class="jdetail-head">
-        <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
-        <div class="jdetail-headinfo">
-          <div class="jdetail-co"><span>${c.name}</span>${BADGE_GOLD}</div>
-          <div class="jdetail-role">${job.role}</div>
-        </div>
-        <button class="jdetail-apply" type="button">Apply</button>
-      </div>
-      <div class="jdetail-tags">
-        <span class="jtag">${ICON_PIN}${job.location}</span>
-        <span class="jtag">${ICON_CASE}${empTypeOf(job)} · ${seniorityOf(job)} · ${locTypeOf(job)}</span>
-        ${job.salary ? `<span class="jtag sal">${ICON_BILL}${job.salary}</span>` : ''}
-      </div>
-      <div class="jdetail-body">
-        <h3>About ${c.name}</h3>
-        <p>${c.name} is a verified company hiring on X. They're building an ambitious product with a small, high-agency team that ships fast and cares deeply about craft.</p>
-        <h3>About the role</h3>
-        <p>As a ${job.role}, you'll own core product surfaces end to end — from early exploration to pixel-perfect delivery — working closely with engineering and product to raise the bar on quality.</p>
-        <h3>What you'll do</h3>
-        <ul>
-          <li>Design flows, interfaces and interactions across web and mobile.</li>
-          <li>Turn ambiguous problems into clear, opinionated product decisions.</li>
-          <li>Prototype quickly and validate ideas with real users.</li>
-          <li>Uphold a high visual and interaction standard across the product.</li>
-        </ul>
-        <h3>What we're looking for</h3>
-        <ul>
-          <li>A strong portfolio of shipped, widely-used work.</li>
-          <li>Comfort operating at ${seniorityOf(job)} scope in a fast-paced team.</li>
-          <li>Fluency in modern design and prototyping tools.</li>
-        </ul>
-        <h3>Location &amp; type</h3>
-        <p>${job.location} · ${empTypeOf(job)} · ${locTypeOf(job)}.</p>
-        <h3>Compensation</h3>
-        <p>${salary}${job.salary ? '' : ' — depending on experience'}, plus equity and benefits.</p>
+    <button class="jdetail-back" type="button">${ICON_BACK} Back</button>
+    <div class="jdetail-head">
+      <div class="jc-logo" style="background:${c.bg}">${c.logo}</div>
+      <div class="jdetail-headinfo">
+        <div class="jdetail-co"><span>${c.name}</span>${BADGE_GOLD}</div>
+        <div class="jdetail-role">${job.role}</div>
       </div>
     </div>
+    <div class="jdetail-tags">
+      <span class="jtag">${ICON_PIN}${job.location}</span>
+      <span class="jtag">${ICON_CASE}${empTypeOf(job)} · ${seniorityOf(job)}</span>
+      ${job.salary ? `<span class="jtag">${ICON_BILL}${job.salary}</span>` : ''}
+    </div>
+    <button class="jdetail-apply" type="button">Apply</button>
+    <p class="jdetail-about">${c.name} is hiring a ${job.role} (${seniorityOf(job)}, ${locTypeOf(job)}) in ${job.location}. You'll shape core product surfaces end to end and work closely with engineering to ship high-quality work, fast.</p>
   </div>`;
 }
 
