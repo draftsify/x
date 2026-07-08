@@ -39,15 +39,20 @@ const ICON_BILL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path clip-rule="
 const ICON_CHEVRON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.586 12L7.543 4.96l1.414-1.42L17.414 12l-8.457 8.46-1.414-1.42L14.586 12z"/></svg>';
 
 function tileHTML(job) {
+  const [amt, per] = job.salary.split(/\s+per\s+/i);
+  const type = job.tags[0] || '';
   return `
   <a class="tile" href="#" tabindex="0">
-    <div class="t-title">${job.title}</div>
+    <div class="tile-top">
+      <div class="t-title">${job.title}</div>
+      <button class="t-apply">Apply</button>
+    </div>
     <div class="t-meta">
-      <div class="t-row">${ICON_PIN}<span>${job.location}</span></div>
-      <div class="t-row t-salary">
-        <span class="t-money">${ICON_BILL}<span>${job.salary}</span></span>
-        <span class="t-chevron">${ICON_CHEVRON}</span>
-      </div>
+      <span class="t-row">${ICON_PIN}<span>${job.location}</span></span>
+      ${type ? `<span class="t-tag">${type}</span>` : ''}
+    </div>
+    <div class="t-salary">
+      ${ICON_BILL}<span class="amt">${amt}</span>${per ? `<span class="per">per ${per}</span>` : ''}
     </div>
   </a>`;
 }
