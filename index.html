@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home / X</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='white' d='M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z'/></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="sidebar"></header>
+
+    <main class="main">
+      <div class="col-header">
+        <h1>Home</h1>
+        <div class="tabs">
+          <div class="tab active">For you</div>
+          <div class="tab">Following</div>
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="avatar"></div>
+        <div style="flex:1">
+          <textarea rows="1" placeholder="What's happening?"></textarea>
+          <div class="actions">
+            <div class="tools"><span>📷</span><span>GIF</span><span>📊</span><span>😊</span></div>
+            <button class="send">Post</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="feed"></div>
+    </main>
+
+    <aside class="right"></aside>
+  </div>
+
+  <script src="shell.js"></script>
+  <script src="feed.js"></script>
+  <script>mountShell('home'); renderFeed();</script>
+</body>
+</html>
