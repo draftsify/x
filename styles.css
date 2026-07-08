@@ -212,6 +212,9 @@ a { color: inherit; text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
 
 /* ---------- Hiring page ---------- */
+/* wide, single-column layout (no right panel) */
+.app-wide { grid-template-columns: 275px minmax(0, 760px); max-width: 1050px; }
+
 .hiring-head { padding: 8px 16px 4px; }
 .hiring-head p { color: var(--text-muted); font-size: 14px; }
 
@@ -295,7 +298,8 @@ a { color: inherit; text-decoration: none; }
 .freset:hover { color: var(--text); background: var(--bg-hover); }
 
 /* job cards — one card per role, sober and well-spaced */
-.jobs-list { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.jobs-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding: 18px 16px; }
+@media (max-width: 680px) { .jobs-list { grid-template-columns: 1fr; } }
 
 .jcard {
   position: relative; display: block;
