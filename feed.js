@@ -7,7 +7,7 @@ const TWEETS = [
   },
   {
     name: 'Vercel', handle: 'vercel', verified: true, time: '4h',
-    text: 'Ship faster. Deploy your frontend in seconds — every push becomes a preview URL. ▲',
+    text: 'Ship faster. Deploy your frontend in seconds — every push becomes a preview URL.',
     stats: { reply: '312', repost: '890', like: '5.6K', views: '740K' },
   },
   {
