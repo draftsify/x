@@ -94,7 +94,32 @@ function jobCardHTML(job) {
   </a>`;
 }
 
+const ICON_CHEV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.543 8.96l1.414-1.42L12 14.59l7.043-7.05 1.414 1.42L12 17.41 3.543 8.96z"/></svg>';
+
+// derive filterable attributes (defaults when not set on the job)
+const locTypeOf = (j) => j.locType || (/remote/i.test(j.location) || (j.cats || []).includes('Remote') ? 'Remote' : 'On-site');
+const seniorityOf = (j) => j.seniority || (/senior|lead|staff|principal/i.test(j.role) ? 'Senior' : /intern/i.test(j.role) ? 'Junior' : 'Mid');
+const empTypeOf = (j) => j.empType || 'Full-time';
+const companyOf = (j) => COMPANIES[j.co].name;
+
+const DROPDOWN_DEFS = [
+  { key: 'locType',   label: 'Location Type',   get: locTypeOf,   options: ['On-site', 'Remote', 'Hybrid'] },
+  { key: 'seniority', label: 'Seniority',       get: seniorityOf, options: ['Junior', 'Mid', 'Senior'] },
+  { key: 'empType',   label: 'Employment Type', get: empTypeOf,   options: ['Full-time', 'Part-time', 'Contract', 'Internship'] },
+  { key: 'company',   label: 'Company',         get: companyOf,   options: [...new Set(JOBS.map(companyOf))].sort() },
+];
+
+// ---- state ----
 let activeFilter = 'For you';
+let kw = '', locq = '';
+const df = {}; // active dropdown filters
+
+function matchesJob(job) {
+  if (activeFilter !== 'For you' && !(job.cats || []).includes(activeFilter)) return false;
+  if (kw && !(`${job.role} ${companyOf(job)}`.toLowerCase().includes(kw.toLowerCase()))) return false;
+  if (locq && !job.location.toLowerCase().includes(locq.toLowerCase())) return false;
+  return DROPDOWN_DEFS.every((d) => !df[d.key] || d.get(job) === df[d.key]);
+}
 
 function renderFilters() {
   document.getElementById('filters').innerHTML = FILTERS
@@ -102,25 +127,79 @@ function renderFilters() {
     .join('');
 }
 
+function renderDropdowns() {
+  const anyActive = Object.keys(df).length || kw || locq || activeFilter !== 'For you';
+  document.getElementById('dropdowns').innerHTML = DROPDOWN_DEFS.map((d) => {
+    const val = df[d.key];
+    return `
+    <div class="fchip ${val ? 'on' : ''}" data-key="${d.key}">
+      <button type="button">${val || d.label} ${ICON_CHEV}</button>
+      <div class="fmenu" hidden>
+        ${d.options.map((o) => `<button type="button" data-val="${o}">${o}${val === o ? '<span class="tick">✓</span>' : ''}</button>`).join('')}
+      </div>
+    </div>`;
+  }).join('') + (anyActive ? '<button class="freset" id="reset" type="button">Reset</button>' : '');
+}
+
 function renderJobs() {
-  const list = activeFilter === 'For you'
-    ? JOBS
-    : JOBS.filter((j) => j.cats.includes(activeFilter));
+  const list = JOBS.filter(matchesJob);
   document.getElementById('jobs').innerHTML = list.length
     ? `<div class="jobs-list">${list.map(jobCardHTML).join('')}</div>`
-    : '<div class="jc-empty">No open roles in this category yet.</div>';
+    : '<div class="jc-empty">No roles match your search.</div>';
+}
+
+function refresh() { renderFilters(); renderDropdowns(); renderJobs(); }
+
+function closeMenus() {
+  document.querySelectorAll('.fchip').forEach((c) => {
+    c.classList.remove('open');
+    const m = c.querySelector('.fmenu');
+    if (m) m.hidden = true;
+  });
 }
 
 function initHiring() {
-  renderFilters();
-  renderJobs();
+  refresh();
+
+  document.getElementById('kw').addEventListener('input', (e) => { kw = e.target.value; renderJobs(); renderDropdowns(); });
+  document.getElementById('loc').addEventListener('input', (e) => { locq = e.target.value; renderJobs(); renderDropdowns(); });
+  document.getElementById('searchBtn').addEventListener('click', renderJobs);
+
+  // category chips
   document.getElementById('filters').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
     if (!chip) return;
     activeFilter = chip.dataset.f;
-    renderFilters();
-    renderJobs();
+    refresh();
   });
+
+  // dropdown filters
+  document.getElementById('dropdowns').addEventListener('click', (e) => {
+    if (e.target.closest('#reset')) {
+      Object.keys(df).forEach((k) => delete df[k]);
+      activeFilter = 'For you'; kw = ''; locq = '';
+      document.getElementById('kw').value = ''; document.getElementById('loc').value = '';
+      closeMenus(); refresh();
+      return;
+    }
+    const opt = e.target.closest('.fmenu button');
+    if (opt) {
+      const key = opt.closest('.fchip').dataset.key;
+      if (df[key] === opt.dataset.val) delete df[key]; else df[key] = opt.dataset.val;
+      closeMenus(); renderDropdowns(); renderJobs();
+      return;
+    }
+    const chipBtn = e.target.closest('.fchip > button');
+    if (chipBtn) {
+      const chip = chipBtn.parentElement;
+      const wasOpen = chip.classList.contains('open');
+      closeMenus();
+      if (!wasOpen) { chip.classList.add('open'); chip.querySelector('.fmenu').hidden = false; }
+    }
+  });
+
+  document.addEventListener('click', (e) => { if (!e.target.closest('.dropdowns')) closeMenus(); });
+
   document.getElementById('jobs').addEventListener('click', (e) => {
     if (e.target.closest('.jcard')) e.preventDefault();
   });
