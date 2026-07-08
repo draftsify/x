@@ -3,44 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Job search / X</title>
+  <title>Hiring / X</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='white' d='M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z'/></svg>">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="page-hiring">
-  <div class="app app-jobs">
+  <div class="app">
     <header class="sidebar"></header>
 
-    <main class="main jobs-main">
-      <div class="jobs-top">
-        <div class="jobs-top-row">
-          <h1>Job search</h1>
-          <a class="jobs-forco" href="#">For companies <span class="pill-new">New</span></a>
+    <main class="main">
+      <div class="col-header">
+        <h1>Hiring</h1>
+        <div class="hiring-head">
+          <p>Open roles from verified companies on X.</p>
         </div>
-        <div class="jobs-search">
-          <label class="jf-field">
-            <span class="jf-label">Keyword</span>
-            <span class="jf-input">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.25 3.75c-3.59 0-6.5 2.91-6.5 6.5s2.91 6.5 6.5 6.5c1.795 0 3.419-.726 4.596-1.904 1.178-1.177 1.904-2.801 1.904-4.596 0-3.59-2.91-6.5-6.5-6.5zm-8.5 6.5c0-4.694 3.806-8.5 8.5-8.5s8.5 3.806 8.5 8.5c0 1.986-.682 3.815-1.824 5.262l4.781 4.781-1.414 1.414-4.781-4.781c-1.447 1.142-3.276 1.824-5.262 1.824-4.694 0-8.5-3.806-8.5-8.5z"/></svg>
-              <input id="kw" placeholder="Search jobs" autocomplete="off">
-            </span>
-          </label>
-          <label class="jf-field">
-            <span class="jf-label">Location</span>
-            <span class="jf-input">
-              <input id="loc" placeholder="Location" autocomplete="off">
-            </span>
-          </label>
-          <button class="jobs-search-btn" id="searchBtn" type="button">Search</button>
-        </div>
-        <div class="jobs-filters" id="filters"></div>
+        <div class="filters" id="filters"></div>
       </div>
 
-      <div class="jobs-body">
-        <div class="jobs-list" id="jobs-list"></div>
-        <div class="jobs-detail" id="jobs-detail"></div>
-      </div>
+      <div id="jobs"></div>
     </main>
+
+    <aside class="right"></aside>
   </div>
 
   <script src="shell.js"></script>
